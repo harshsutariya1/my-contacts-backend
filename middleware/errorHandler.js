@@ -1,9 +1,11 @@
+const { constants } = require("../constants");
+
 // Error handling middleware
 const errorHandler = (err, req, res, next) => {
     const statusCode = res.statusCode ? res.statusCode : 500;
 
     switch (statusCode) {
-        case 400:
+        case constants.VALIDATION_ERROR:
             res.json({
                 title: "Validation Error",
                 status: statusCode,
@@ -12,7 +14,7 @@ const errorHandler = (err, req, res, next) => {
             });
             break;
 
-        case 401:
+        case constants.UNAUTHORIZED:
             res.json({
                 title: "Unauthorized",
                 status: statusCode,
@@ -21,7 +23,7 @@ const errorHandler = (err, req, res, next) => {
             });
             break;
 
-        case 403:
+        case constants.FORBIDDEN:
             res.json({
                 title: "Forbidden",
                 status: statusCode,
@@ -30,7 +32,7 @@ const errorHandler = (err, req, res, next) => {
             });
             break;
 
-        case 404:
+        case constants.NOT_FOUND:
             res.json({
                 title: "Resources Not Found",
                 status: statusCode,
@@ -39,14 +41,17 @@ const errorHandler = (err, req, res, next) => {
             });
             break;
 
-        default:
-            console.error(err);
+        case constants.SERVER_ERROR:
             res.json({
                 title: "Server Error",
                 status: statusCode,
                 message: err.message,
                 stack: process.env.NODE_ENV === 'production' ? null : err.stack,
             });
+            break;
+
+        default:
+            console.info("No Errors! All Good!");
             break;
     }
 };
